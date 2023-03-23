@@ -3,21 +3,19 @@ function specialNumbers(n) {
     let newNumber = i;
     let sumOfDigits = 0;
 
-  switch (i) {
-    case 5: case 7: case 11:
-      console.log(`${i} -> True`);
-      break;
-    default:
-      console.log(`${i} -> False`);
-      break;
-  }
+    switch (i) {
+      case 5: case 7: case 11:
+        console.log(`${i} -> True`);
+        break;
+      default:
+        console.log(`${i} -> False`);
+        break;
+    }
 
     while (newNumber > 0) {
       sumOfDigits += newNumber % 10;
       newNumber = Math.floor(i / 10);
-    }
-
-    
+    }    
   }
 }
 specialNumbers(15);
