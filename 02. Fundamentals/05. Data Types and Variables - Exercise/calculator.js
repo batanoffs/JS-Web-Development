@@ -15,5 +15,6 @@ function calculator(num, operator, diffNum) {
       break;
   }
   console.log(calc.toFixed(2));
+  
 }
 calculator(25.5, "*", 3);
