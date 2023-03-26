@@ -4,24 +4,21 @@ function gladiatorExpenses (lostFightsCount,helmetPrice,swordPrice, shieldPrice,
   let armorCounter = 0;
   let swordCounter = 0;
   let shieldCounter = 0;
+
   for (let i = 1; i<= lostFightsCount; i ++) {
     if (i%3 === 0 && i%2 === 0 && i > 1) {
-      helmetCounter++;
-      swordCounter++;
-      if (shieldCounter%2 === 0 && shieldCounter > 1){
-        shieldCounter++;
-        armorCounter++;
-      }
-      shieldCounter++;
-    } else if (i%1 === 0 && i > 1) {
-      if (helmetCounter > 1) {
-        helmetCounter ++;
-        armorCounter ++;
-      } else {
-      helmetCounter ++;
-      }
+        helmetCounter++;
+        swordCounter++;
+        if (shieldCounter%2 === 0 && shieldCounter > 1){
+          shieldCounter++;
+          armorCounter++;
+        } else {
+          shieldCounter++;
+        }
+    } else if (i%3 === 0 && i > 1) {
+        swordCounter++;
     } else if (i%2 === 0) {
-      swordCounter++;
+        helmetCounter++;
     }
   }
   totalExpenses = helmetCounter*helmetPrice + armorCounter*armorPrice + swordCounter*swordPrice + shieldCounter*shieldPrice;
@@ -31,11 +28,11 @@ function gladiatorExpenses (lostFightsCount,helmetPrice,swordPrice, shieldPrice,
   console.log(armorCounter);
   console.log(shieldCounter);
 }
-gladiatorExpenses(7,
-  2,
-  3,
-  4,
-  5);
+gladiatorExpenses(23,
+  12.50,
+  21.50,
+  40,
+  200);
 
 
 // • The first parameter - lost fights count - is an integer in the range [0, 1000].
