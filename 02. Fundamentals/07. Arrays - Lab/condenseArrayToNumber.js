@@ -15,4 +15,4 @@ for (let index = 0; index < array.length; index++) {
   
 }
 
-condenseArrayToNumber ([5,0,4,1,2]);
+condenseArrayToNumber ([5,0,4,1,2]) ;
