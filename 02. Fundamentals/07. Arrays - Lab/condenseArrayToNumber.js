@@ -1,18 +1,29 @@
-function condenseArrayToNumber (arr) {
-  let newArr = [];
+// function condenseArrayToNumber (arr) {
+//   let lastArr = [];
+   
+//   for(let i = 0; i<arr.length-1; i++) {  
+//     let firstNum = arr[i];  
+//     let secondNum = arr[j]; 
+//     temp = firstNum + secondNum;
+//     newArr.push(temp);      
+//   }
+// }
 
-    for (let index = 0; index < arr.length-1; index++) {
-      const element1 = arr[index];
-      const element2 = arr[(index+1)];
-      let newElement = element1 + element2;
-      newArr.push(newElement);    
+
+// condenseArrayToNumber ([5,0,4,1,2]);
+
+function condenseArray(nums) {
+  while (nums.length > 1) {
+    const condensed = [];
+    for (let i = 0; i < nums.length - 1; i++) {
+      condensed.push(nums[i] + nums[i+1]);
     }
-    return newArr;  
+    nums = condensed;
+  }
+  console.log(nums[0]);
 }
+condenseArray([2, 10, 3]);
 
-for (let index = 0; index < array.length; index++) {
-  const element = array[index];
-  
-}
-
-condenseArrayToNumber ([5,0,4,1,2]) ;
+// const nums = [2, 10, 3];
+// const result = condenseArray(nums);
+// console.log(result); // output: 25
