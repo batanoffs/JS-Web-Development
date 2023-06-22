@@ -25,7 +25,7 @@ function equalSums (array) {
       nextSum = 0;
       prevSum = 0;     
    }
-} 
+}
 equalSums([1, 2, 3, 3]);
 equalSums([1, 2]);
 equalSums([1]);
