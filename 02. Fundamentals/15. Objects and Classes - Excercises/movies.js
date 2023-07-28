@@ -1,36 +1,35 @@
 function movies (data) {
 
-   let action = ``;
-   let movieName = ``;
-   let director = ``;
-   let date = ``;
-   let moviesList = {};
+   let movies = [];
 
    for (let command of data) {
       
       if (command.includes(`addMovie`)) {
-         command.split(`addMovie `);
-         action = command[0];
-         movieName = command[1];
-      } else if (command.includes(` directedBy `)) {
-         command.split(` directedBy `);
-         movieName = command[0];
-         action = command[1];
-         director = command[2];         
-      } else if (command.includes(` onDate `)) {
-         command.split(` onDate `);
-         movieName = command[0];
-         action = command[1];
-         date = command[2];
-      }
-      switch (action) {
-         case `addMovie `:
-            
-            break;
-      
-      }
-
+         let name = command.split(`addMovie `)[1];
+         movies.push({name});
+         
+      } else if (command.includes(`directedBy`)) {
+         let [name, director] = command.split(` directedBy `);
+         let movie = movies.find(m => m.name === name);
+         if (movie) {
+            movie.director = director;
+         }
+                  
+      } else if (command.includes(`onDate`)) {
+         let [name, date] = command.split(` onDate `);
+         let movie = movies.find(m => m.name === name);
+         if(movie) {
+            movie.date = date;
+         }         
+      }     
    }
+
+   movies.forEach(movie => {
+      if (movie.name && movie.director && movie.date) {
+         console.log(JSON.stringify(movie));
+      }
+      
+   });
 }
 
 movies([
