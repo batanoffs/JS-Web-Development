@@ -1,17 +1,22 @@
 function toggle() {
-    let button = document.getElementsByClassName(`button`)[0];
-    let extra = document.getElementById(`extra`);
-    let style = extra.style.display;
+   //constants
+   const MORE = `More`;
+   const LESS = `Less`;
 
-    if (style == ``) {
-        style = `none`
-    }
+   //capture elements
+   const buttonSpan = document.querySelector(`.button`);
+   const divWrapperText = document.querySelector(`#extra`);
 
-    if(style == `none`) {
-        extra.style.display = `block`
-        button.textContent = `Less`
-    } else if(style = `block`) {
-        extra.style.display = `none`
-        button.textContent = `More`
-    }    
+   // toggle functionality
+   buttonSpan.textContent = buttonSpan.textContent === MORE ? LESS : MORE;
+
+   if (style == ``) {
+    divWrapperText.style.display = `none`;
+   }
+
+   if (style == `none`) {
+      divWrapperText.style.display = `block`;      
+   } else if ((style = `block`)) {
+      divWrapperText.style.display = `none`;      
+   }
 }

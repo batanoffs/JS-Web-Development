@@ -1,34 +1,34 @@
 function solve() {
-  let input = document.getElementById(`text`).value;
-  let currentCase = document.getElementById(`naming-convention`).value; 
-  let words = input.toLowerCase().split(` `);
-  let result = ``;
+   // constants
+   const CAMEL_CASE = `Camel Case`;
+   const PASCAL_CASE = `Pascal Case`;
 
-  
+   // capture elemets
+   const inputValueLowerCase = document
+      .getElementById(`text`)
+      .value.toLowerCase();
+   const currentCaseValue = document.getElementById(`naming-convention`).value;
+   const result = document.getElementById(`result`);
 
-  if (currentCase.includes(`pascal`)) {
+   //validate case
+   if (currentCaseValue !== CAMEL_CASE && currentCaseValue !== PASCAL_CASE) {
+      result.textContent = `Error!`;
+      return;
+   }
 
-    for (let i = 0; i < words.length; i++) {
-      let word = words[i];
-      let splitStart = word.substring(0,1);
-      let newWord = splitStart.toUpperCase().concat(word.substring(1));
-      result += newWord;      
-    }        
-  } else if (currentCase.includes(`camel`)) {
+   //solve
+   const arrOfInput = inputValueLowerCase.split(` `);
+   let output = ``;
+   let startingPoint = 0;
 
-    for (let i = 0; i < words.length; i++) {
-      let word = words[i];
-      if (i == 0) {
-        result += word
-      } else {
-      let splitStart = word.substring(0,1);
-      let newWord = splitStart.toUpperCase().concat(word.substring(1));
-      result += newWord;
-      }
-    }        
-  } else {
-    result += `Error!`
-  }
-
-  document.getElementById(`result`).textContent = result;
+   if (currentCaseValue === CAMEL_CASE) {
+      output += arrOfInput[0];
+      startingPoint = 1;
+   }
+   for (let i = startingPoint; i < arrOfInput.length; i++) {
+      const currentWord = arrOfInput[i];
+      output += currentWord[0].toUpperCase() + currentWord.slice(1, currentWord.length);
+      
+      result.textContent = output;
+   }
 }

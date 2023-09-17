@@ -1,11 +1,7 @@
 function subtract() {
-    let firstNum = document.getElementById(`firstNumber`);
-    let secondNum = document.getElementById(`secondNumber`);
+    const firstNum = Number(document.getElementById(`firstNumber`));
+    const secondNum = Number(document.getElementById(`secondNumber`));
+    const sum = firstNum - secondNum;
 
-    firstNum = Number(firstNum.value);
-    secondNum = Number(secondNum.value);
-
-    let result = firstNum - secondNum;
-
-    document.getElementById(`result`).textContent = result;
+    document.getElementById(`result`).textContent = sum;
 }
