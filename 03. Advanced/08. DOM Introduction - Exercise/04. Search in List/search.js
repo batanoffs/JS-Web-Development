@@ -17,4 +17,5 @@ function search() {
    if (counter > 0) {
       result.textContent = `${counter} matches found`;   
    }
+   //asd
 }
