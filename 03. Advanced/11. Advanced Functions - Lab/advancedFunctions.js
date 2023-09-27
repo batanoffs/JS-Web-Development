@@ -22,7 +22,8 @@
       const increment2 = n => n+1;
       increment2(1); //2
 
- /* 4) REFERENTAL TRASPERENCY - Тясно свързано с PURE FUNCTIONS. Eдна функ. може да я подменим в кода с резултата, който тя връща без това да промени състоянието на програмата;
+ /*
+  4) REFERENTAL TRASPERENCY - Тясно свързано с PURE FUNCTIONS. Eдна функ. може да я подменим в кода с резултата, който тя връща без това да промени състоянието на програмата;
 
 
   5) CLOSURE - ONE OF THE MOST IMPORTANT FEATURES (common interview question, fundamental technique)
