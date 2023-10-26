@@ -1,16 +1,16 @@
 window.addEventListener("load", solution);
 
 function solution() {
-    const form = document.querySelector("form");
+    // const form = document.querySelector("form");
+    const employee = document.getElementById("employee");
+    const category = document.getElementById("category");
+    const urgency = document.getElementById("urgency");
+    const assignedTeam = document.getElementById("team");
+    const description = document.getElementById("description");
+    const addBtn = document.getElementById("add-btn");
     const previewUL = document.querySelector(".preview-list");
     const pendingUL = document.querySelector(".pending-list");
     const resolvedList = document.querySelector(".resolved-list");
-    const addBtn = form[5];
-    let employee = form[0];
-    let category = form[1];
-    let urgency = form[2];
-    let assignedTeam = form[3];
-    let description = form[4];
 
     addBtn.addEventListener(`click`, add);
 
@@ -63,13 +63,13 @@ function solution() {
         liContent.appendChild(continueBtn);
         previewUL.appendChild(liContent);
 
-        form[0].value = ``;
-        form[1].value = ``;
-        form[2].value = ``;
-        form[3].value = ``;
-        form[4].value = ``;
+        employee.value = "";
+        category.value = "";
+        urgency.value = "";
+        assignedTeam.value = "";
+        description.value = "";
         addBtn.disabled = true;
-        
+
         editBtn.addEventListener(`click`, onEdit);
         continueBtn.addEventListener(`click`, pending);
 
