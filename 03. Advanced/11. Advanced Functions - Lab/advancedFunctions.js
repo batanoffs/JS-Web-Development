@@ -11,7 +11,7 @@
   2) PREDICATE - function that returns true/false;
 
   3) PURE FUNCTIONS (common interview question, best practice)
-      Returns same result given same parameters  */
+      Returns same result if given same parameters */
       
       // impure function:  
       let num = 1;
@@ -20,6 +20,7 @@
 
       // pure function:
       const increment2 = n => n+1;
+      increment2(1); //2
       increment2(1); //2
 
  /*
