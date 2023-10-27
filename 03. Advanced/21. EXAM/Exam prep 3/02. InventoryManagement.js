@@ -5,7 +5,10 @@ class InventoryManager {
         this.outOfStock = [];
     }
     addItem(itemName, quantity) {
-        if(typeof itemName !== String && typeof quantity !== Number) {
+        if (
+            (typeof itemName !== `string` || itemName instanceof String) &&
+            (typeof quantity !== `number` || quantity instanceof Number)
+        ) {
             throw new Error("Incorrect input parameters type");
         }
         let index = this.items.findIndex((x) => x.itemName === itemName);
@@ -26,7 +29,10 @@ class InventoryManager {
         }
     }
     sellItem(itemName, quantity) {
-        if(typeof itemName !== String && typeof quantity !== Number) {
+        if (
+            (typeof itemName !== `string` || itemName instanceof String) &&
+            (typeof quantity !== `number` || quantity instanceof Number)
+        ) {
             throw new Error("Incorrect input parameters type");
         }
         let index = this.items.findIndex((x) => x.itemName === itemName);
@@ -45,7 +51,7 @@ class InventoryManager {
             } else {
                 this.items[index].quantity -= quantity;
                 if (this.items[index].quantity === 0) {
-                    let item = this.items.splice(index, index).pop();
+                    let item = this.items.splice(index, 1).pop();
                     this.outOfStock.push(item);
                 }
                 return `Sold ${quantity} ${itemName}(s) from the inventory.`;
@@ -53,7 +59,10 @@ class InventoryManager {
         }
     }
     restockItem(itemName, quantity) {
-        if(typeof itemName !== String && typeof quantity !== Number) {
+        if (
+            (typeof itemName !== `string` || itemName instanceof String) &&
+            (typeof quantity !== `number` || quantity instanceof Number)
+        ) {
             throw new Error("Incorrect input parameters type");
         }
         let indexStore = this.items.findIndex((x) => x.itemName === itemName);
@@ -69,7 +78,7 @@ class InventoryManager {
         } else {
             this.items.push({ itemName, quantity });
             if (indexStock !== -1) {
-                this.outOfStock.splice(indexStock, indexStock);
+                this.outOfStock.splice(indexStock, 1);
             }
             return `Restocked ${quantity} ${itemName}(s) in the inventory.`;
         }
@@ -88,3 +97,10 @@ class InventoryManager {
     }
 }
 
+let myManager = new InventoryManager(2);
+
+console.log(myManager.addItem("Hammer", 10));
+console.log(myManager.sellItem("Hammer", 10));
+console.log(myManager.restockItem("Chisel", 5));
+console.log(myManager.restockItem("Drill", 1));
+console.log(myManager.getInventorySummary());
