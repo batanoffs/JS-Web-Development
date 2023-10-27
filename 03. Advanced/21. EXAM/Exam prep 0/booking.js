@@ -5,27 +5,23 @@ class FlightBookingSystem {
         this.bookings = [];
         this.bookingsCount = 0;
     }
+
     addFlight(flightNumber, destination, departureTime, price) {
-        let currentFlight = {
-            flightNumber: flightNumber,
-            destination: destination,
-            tdepartureTime: departureTime,
-            price: price,
-        };
-        if (this.flights[0] === undefined) {
-            this.flights.push(currentFlight);
-            return `Flight ${flightNumber} to ${destination} has been added to the system.`;
-        } else if (
-            this.flights.find(
-                (element) => element.flightNumber === flightNumber
-            )
-        ) {
-            return `Flight ${flightNumber} to ${destination} is already available.`;
-        } else {
-            this.flights.push(currentFlight);
-            return `Flight ${flightNumber} to ${destination} has been added to the system.`;
-        }
+        const existingFlight = this.flights.find(flight => flight.flightNumber === flightNumber);
+      if (existingFlight) {
+        return (`Flight ${flightNumber} to ${destination} is already available.`);
+      }
+  
+      const newFlight = {
+        flightNumber,
+        destination,
+        departureTime,
+        price
+      };
+      this.flights.push(newFlight);
+      return `Flight ${flightNumber} to ${destination} has been added to the system.`;
     }
+    
     bookFlight(passengerName, flightNumber) {
         let passenger = {
             passengerName: passengerName,
@@ -39,11 +35,29 @@ class FlightBookingSystem {
             return `Flight ${flightNumber} is not available for booking.`;
         }
     }
+
+    cancelBooking(passengerName, flightNumber) {
+        let bookingIndex = this.bookings.findIndex(
+            (x) =>
+                x.passengerName === passengerName &&
+                x.flightNumber === flightNumber
+        );
+        if (bookingIndex === -1) {
+            throw new Error(
+                `Booking for passenger ${passengerName} on flight ${flightNumber} not found.`
+            );
+        }
+        this.bookings.splice(bookingIndex, 1);
+        this.bookingsCount--;
+        return `Booking for passenger ${passengerName} on flight ${flightNumber} is cancelled.`;
+    }
+
     showBookings(criteria) {
         if (this.bookings[0] === undefined) {
-            throw new Error`No bookings have been made yet.`();
+            throw new Error(`No bookings have been made yet.`);
         }
 
+        // All flights
         if (criteria === "all") {
             let buffer = this.bookings.map((x) => {
                 return `${x.passengerName} booked for flight ${x.flightNumber}.`;
@@ -51,10 +65,15 @@ class FlightBookingSystem {
             return (
                 `All bookings(${this.bookingsCount}):` +
                 "\n" +
-                buffer.join("\n")
+                buffer.join("\n").trim()
             );
         }
-
+        const priceThreshold = criteria === "cheap" ? 100 : criteria === "expensive" ? 100 : null;
+  
+        if (priceThreshold === null) {
+          throw new Error("Invalid criteria.");
+        }
+        // Cheap flights
         if (criteria === "cheap") {
             let buffer = this.flights.map((x) => {
                 if (x.price <= 100) {
@@ -65,20 +84,29 @@ class FlightBookingSystem {
             if (buffer[0] === undefined) {
                 return "No cheap bookings found.";
             } else {
-                return "Cheap bookings:" + "\n" + buffer.join("\n");
+                return "Cheap bookings:" + "\n" + buffer.join("\n").trim()
             }
         }
+
+        // Expensive flights
         if (criteria === "expensive") {
-            let buffer = this.flights.map((x) => {
+            let buffer = [];
+            let array = this.flights.map((x, index) => {
                 if (x.price > 100) {
-                    return `${x.passengerName} booked for flight ${x.flightNumber}.`;
+                    return { price: x.price, index: index };
                 }
             });
 
-            if (buffer[0] === undefined) {
+            if (array[0] === undefined) {
                 return "No expensive bookings found.";
             } else {
-                return "Expensive bookings:" + "\n" + buffer.join("\n");
+                for (const el of array) {
+                    let name = this.bookings[el.index].passengerName;
+                    let number = this.bookings[el.index].flightNumber;
+                    let text = `${name} booked for flight ${number}.`;
+                    buffer.push(text);
+                }
+                return "Expensive bookings:" + "\n" + buffer.join("\n").trim();
             }
         }
     }
@@ -91,12 +119,3 @@ console.log(system.bookFlight("Alice", "AA101"));
 console.log(system.bookFlight("Bob", "BB202"));
 console.log(system.showBookings("expensive"));
 console.log(system.showBookings("cheap"));
-
-/*Flight AA101 to Los Angeles has been added to the system.
-  Flight BB202 to New York has been added to the system.
-  Booking for passenger Alice on flight AA101 is confirmed.
-  Booking for passenger Bob on flight BB202 is confirmed.
-  Expensive bookings:
-  Alice booked for flight AA101.
-  Bob booked for flight BB202.
-  No cheap bookings found.*/
