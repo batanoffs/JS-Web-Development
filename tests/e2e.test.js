@@ -1,4 +1,4 @@
-const { firefox } = require('playwright-firefox');
+const { chromium } = require('playwright-chromium');
 const { expect } = require('chai');
 
 const host = 'http://localhost:' + 3000; // Application host (NOT service host - that can be anything)
@@ -42,7 +42,7 @@ describe('E2E tests', function () {
   this.timeout(6000);
 
   before(async () => {
-    browser = await firefox.launch(DEBUG ? { headless: false, slowMo } : {});
+    browser = await chromium.launch(DEBUG ? { headless: false, slowMo } : {});
   });
   after(async () => {
     await browser.close();
