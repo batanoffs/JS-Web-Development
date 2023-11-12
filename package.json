@@ -1,18 +1,6 @@
 {
   "dependencies": {
-    "chai": "^4.3.10",
     "mocha": "^10.2.0",
-    "playwright": "^1.39.0"
-  },
-  "name": "02.-solve",
-  "description": "My workout - excercises regarding JS",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {},
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@playwright/test": "^1.39.0",
-    "@types/node": "^20.8.10"
+    "playwright-chromium": "^1.39.0"
   }
 }

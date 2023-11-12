@@ -22,7 +22,6 @@
             ],
             "type": "node"
         },
-        
         {
             "type": "node",
             "request": "launch",
