@@ -4,8 +4,8 @@ const main = document.querySelector("main");
 const section = document.querySelector("comments");
 const createCommentFormContainer = document.querySelector("div.answer-comment");
 const form = createCommentFormContainer.querySelector("form");
-form.addEventListener("submit", onSubmit);
 
+form.addEventListener("submit", onSubmit);
 createCommentFormContainer.remove();
 section.remove();
 
@@ -14,17 +14,16 @@ let id = "";
 export async function showDetails(ev) {
     id = ev ? ev.target.parentElement.dataset.id : id;
     const topic = await getTopic(id);
-    const comments = await getAllComentsById(id);
+    const comments = await getAllCommentsById();
     const div = decument.createElement("div");
     div.setAttribute("class", "comment");
     const topicElement = createTopicTemp(topic);
-    Object.values().comments.forEach(comment => {
+    div.appendChild(topicElement);
+    Object.values(comments).forEach(comment => {
         const commentElement = createCommentTemp(comment)
         div.appendChild(commentElement);
     });
-    const commentElement = createCommentTemp();
-    div.appendChild(topicElement);
-    div.appendChild(commentElement);
+    
     section.replaceChildren(div);
     section.appendChild(createCommentFormContainer);
 

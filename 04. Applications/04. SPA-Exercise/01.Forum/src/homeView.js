@@ -8,7 +8,6 @@ const form = section.querySelector("form");
 const cancel = document.querySelector(".cancel");
 cancel.addEventListener("click", clearForm)
 form.addEventListener("submit", onSubmit);
-
 section.remove();
 
 export async function showHome(event) {
@@ -20,9 +19,9 @@ export async function showHome(event) {
         topicContent.appendChild(temp);
     })
 
-    topicContent.innerHTML = createTopicTemp();
+    // topicContent.innerHTML = createTopicTemp();
 
-    topicContent.querySelector("a").addEventListener("click", showDetails);
+    topicContent.querySelector("a")?.addEventListener("click", showDetails);
 
     main.replaceChild(section);
     main.appendChild(topicContent);

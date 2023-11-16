@@ -29,7 +29,7 @@ function attachEvents() {
                     load();
             });
 
-            li.textContent = `${object[1].person}: ${object[1].phone}Delete`;
+            li.textContent = `${object[1].person}: ${object[1].phone}`;
             ul.appendChild(li);
             li.appendChild(deleteBtn);
         }

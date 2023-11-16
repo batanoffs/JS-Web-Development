@@ -4,152 +4,98 @@ const { expect } = require('chai');
 const host = 'http://localhost:3000'; // Application host (NOT service host - that can be anything)
 
 const DEBUG = false;
-const slowMo = 100;
+const slowMo = 500;
 
 const mockData = {
-  profile: [
+  catalog: [
     {
+      text: 'Rome',
       _id: '1001',
-      username: 'John',
-      email: 'john@users.bg',
-      age: 31,
+    },
+    {
+      text: 'Amsterdam',
+      _id: '1002',
     },
   ],
 };
 
 const endpoints = {
-  list: '/jsonstore/advanced/profiles',
+  catalog: '/jsonstore/advanced/dropdown',
 };
 
 let browser;
-let context;
 let page;
 
 describe('E2E tests', function () {
   // Setup
-  this.timeout(DEBUG ? 120000 : 7000);
-  before(
-    async () =>
-      (browser = await chromium.launch(
-        DEBUG ? { headless: false, slowMo } : {}
-      ))
-  );
-  after(async () => await browser.close());
+  this.timeout(6000);
+
+  before(async () => {
+    browser = await chromium.launch(DEBUG ? { headless: false, slowMo } : {});
+  });
+  after(async () => {
+    await browser.close();
+  });
   beforeEach(async () => {
-    context = await browser.newContext();
-    setupContext(context);
-    page = await context.newPage();
+    page = await browser.newPage();
   });
   afterEach(async () => {
     await page.close();
-    await context.close();
   });
 
-  // Test proper
-  describe('Profile Info', () => {
-    it('Load profiles', async () => {
-      const data = mockData.profile;
-      const { get } = await handle(endpoints.list);
+  describe('Catalog', () => {
+    it('Show catalog', async () => {
+      const data = mockData.catalog;
+      const { get } = await handle(endpoints.catalog);
       get(data);
-
       await page.goto(host);
-      await page.waitForSelector('.profile');
+      await page.waitForSelector('#menu');
 
-      const post = await page.$$eval(`.profile`, (t) =>
+      await page.click('#menu');
+      const city = await page.$$eval(`#menu option`, (t) =>
         t.map((s) => s.textContent)
       );
-      expect(post.length).to.equal(data.length);
+
+      expect(city.length).to.equal(data.length);
     });
 
-    it('Check profile name', async () => {
-      const data = mockData.profile;
-      const { get } = await handle(endpoints.list);
+    it('Check catalog value', async () => {
+      const data = mockData.catalog;
+      const { get } = await handle(endpoints.catalog);
       get(data);
-
       await page.goto(host);
-      await page.waitForSelector('.profile');
+      await page.waitForSelector('#menu');
 
-      await page.click('input[value="unlock"]');
-      await page.click('text=Show more');
-
-      const post = await page.$$eval(`input[name="user1Username"]`, (t) =>
+      await page.click('#menu');
+      const city = await page.$$eval(`#menu option`, (t) =>
         t.map((s) => s.value)
       );
 
-      expect(post[0]).to.equal(data[0].username);
+      expect(city[0]).to.equal(data[0]._id);
+      expect(city[1]).to.equal(data[1]._id);
     });
 
-    it('Check isLocked', async () => {
-      const data = mockData.profile;
-      const { get } = await handle(endpoints.list);
-      get(data);
+    it('Add town to catalog API call', async () => {
+      const town = mockData.catalog[0];
+
+      const { post } = await handle(endpoints.catalog);
+      const isCalled = post().isHandled;
 
       await page.goto(host);
-      await page.waitForSelector('.profile');
+      await page.waitForSelector('#itemText');
 
-      const post = await page.$$eval(`input:checked`, (t) =>
-        t.map((s) => s.value)
-      );
-      expect(post[0]).to.equal('lock');
-    });
+      await page.fill('#itemText', town.text);
 
-    it('Check information when in unlock', async () => {
-      debugger
-      const data = mockData.profile;
-      const { get } = await handle(endpoints.list);
-      get(data);
+      page.click('[type="submit"]');
 
-      await page.goto(host);
-      await page.waitForSelector('.profile');
-
-      await page.click('input[value="unlock"]');
-      await page.click('text=Show more');
-      const post = await page.$$eval(`input[type="email"]`, (t) =>
-        t.map((s) => s.value)
-      );
-      console.log(post);
-      console.log(data[0].email);
-      console.log(post[1]);
-      console.log(`${data[0].age}`);
-      expect(post[0]).to.equal(data[0].email);
-      expect(post[1]).to.equal(`${data[0].age}`);
+      expect(isCalled()).to.be.false;
     });
   });
 });
 
 async function setupContext(context) {
   // Catalog and Details
-  await handleContext(context, endpoints.list, { get: mockData.profile });
-  await handleContext(context, endpoints.info('1001'), {
-    get: mockData.details[0],
-  });
-  await handleContext(context, endpoints.info('1002'), {
-    get: mockData.details[1],
-  });
-
-  await handleContext(context, endpoints.details('1001'), {
-    get: mockData.catalog[0],
-  });
-  await handleContext(context, endpoints.details('1002'), {
-    get: mockData.catalog[1],
-  });
-  await handleContext(context, endpoints.details('1003'), {
-    get: mockData.catalog[2],
-  });
-
-  await handleContext(
-    endpoints.profile('0001'),
-    { get: mockData.catalog.slice(0, 2) },
-    context
-  );
-
-  await handleContext(endpoints.total('1001'), { get: 6 }, context);
-  await handleContext(endpoints.total('1002'), { get: 4 }, context);
-  await handleContext(endpoints.total('1003'), { get: 7 }, context);
-
-  await handleContext(endpoints.own('1001', '0001'), { get: 1 }, context);
-  await handleContext(endpoints.own('1002', '0001'), { get: 0 }, context);
-  await handleContext(endpoints.own('1003', '0001'), { get: 0 }, context);
+  await handleContext(context, endpoints.catalog, { get: mockData.catalog });
 
   // Block external calls
   await context.route(

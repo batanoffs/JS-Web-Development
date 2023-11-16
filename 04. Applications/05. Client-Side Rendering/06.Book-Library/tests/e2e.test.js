@@ -3,22 +3,35 @@ const { expect } = require('chai');
 
 const host = 'http://localhost:3000'; // Application host (NOT service host - that can be anything)
 
+const interval = 300;
+const timeout = 6000;
 const DEBUG = false;
-const slowMo = 100;
+const slowMo = 500;
 
 const mockData = {
-  profile: [
+  catalog: [
     {
+      title: 'A Court Of Silver Flame',
+      author: 'Sara J Maas',
       _id: '1001',
-      username: 'John',
-      email: 'john@users.bg',
-      age: 31,
+    },
+    {
+      title: '1984',
+      author: 'Oruel',
+      _id: '1002',
+    },
+    {
+      title: 'The Mortal Instruments',
+      author: 'Cassandra Clare',
+      _id: '1003',
     },
   ],
 };
 
 const endpoints = {
-  list: '/jsonstore/advanced/profiles',
+  catalog: '/jsonstore/collections/books',
+  details: (id) => `/jsonstore/collections/books/${id}`,
+  delete: (id) => `/data/albums/${id}`,
 };
 
 let browser;
@@ -26,8 +39,7 @@ let context;
 let page;
 
 describe('E2E tests', function () {
-  // Setup
-  this.timeout(DEBUG ? 120000 : 7000);
+  this.timeout(DEBUG ? 120000 : timeout);
   before(
     async () =>
       (browser = await chromium.launch(
@@ -45,88 +57,89 @@ describe('E2E tests', function () {
     await context.close();
   });
 
-  // Test proper
-  describe('Profile Info', () => {
-    it('Load profiles', async () => {
-      const data = mockData.profile;
-      const { get } = await handle(endpoints.list);
-      get(data);
-
+  describe('Catalog', () => {
+    it('Show catalog before Load Books', async () => {
       await page.goto(host);
-      await page.waitForSelector('.profile');
+      await page.waitForSelector('table');
 
-      const post = await page.$$eval(`.profile`, (t) =>
+      const books = await page.$$eval(`tbody tr`, (t) =>
         t.map((s) => s.textContent)
       );
-      expect(post.length).to.equal(data.length);
+
+      expect(books.length).to.equal(0);
     });
 
-    it('Check profile name', async () => {
-      const data = mockData.profile;
-      const { get } = await handle(endpoints.list);
-      get(data);
-
+    it('Show catalog after Load Books', async () => {
       await page.goto(host);
-      await page.waitForSelector('.profile');
+      const data = mockData.catalog;
+      const { get } = await handle(endpoints.catalog);
+      get(data);
+      await page.waitForSelector('#loadBooks');
 
-      await page.click('input[value="unlock"]');
-      await page.click('text=Show more');
-
-      const post = await page.$$eval(`input[name="user1Username"]`, (t) =>
-        t.map((s) => s.value)
+      await page.click('#loadBooks');
+      const books = await page.$$eval(`tbody tr`, (t) =>
+        t.map((s) => s.textContent)
       );
 
-      expect(post[0]).to.equal(data[0].username);
+      expect(books.length).to.equal(3);
     });
 
-    it('Check isLocked', async () => {
-      const data = mockData.profile;
-      const { get } = await handle(endpoints.list);
-      get(data);
-
+    it('Create Books makes correct API call', async () => {
       await page.goto(host);
-      await page.waitForSelector('.profile');
+      const { post } = await handle(endpoints.catalog);
+      const { onRequest } = post();
 
-      const post = await page.$$eval(`input:checked`, (t) =>
-        t.map((s) => s.value)
-      );
-      expect(post[0]).to.equal('lock');
+      await page.waitForSelector('#loadBooks');
+
+      await page.click('#loadBooks');
+
+      await page.fill('[name="title"]', 'A Court of Silver Flames');
+      await page.fill('[name="author"]', 'Sarah J. Maas');
+
+      const [request] = await Promise.all([
+        onRequest(),
+        page.click('[type="submit"]'),
+      ]);
+
+      const postData = JSON.parse(request.postData());
+
+      expect(postData.title).to.equal('A Court of Silver Flames');
+      expect(postData.author).to.equal('Sarah J. Maas');
     });
 
-    it('Check information when in unlock', async () => {
-      debugger
-      const data = mockData.profile;
-      const { get } = await handle(endpoints.list);
-      get(data);
-
+    it('Create Books does NOT work with empty fields', async () => {
       await page.goto(host);
-      await page.waitForSelector('.profile');
+      const { post } = await handle(endpoints.catalog);
+      const isCalled = post().isHandled;
 
-      await page.click('input[value="unlock"]');
-      await page.click('text=Show more');
-      const post = await page.$$eval(`input[type="email"]`, (t) =>
-        t.map((s) => s.value)
-      );
-      console.log(post);
-      console.log(data[0].email);
-      console.log(post[1]);
-      console.log(`${data[0].age}`);
-      expect(post[0]).to.equal(data[0].email);
-      expect(post[1]).to.equal(`${data[0].age}`);
+      await page.waitForSelector('form');
+
+      await page.waitForSelector('form');
+      page.click('[type="submit"]');
+
+      expect(isCalled()).to.be.false;
+    });
+
+    it('Users sees edit and delete buttons', async () => {
+      await page.goto(host);
+      const data = mockData.catalog;
+      const { get } = await handle(endpoints.catalog);
+      get(data);
+      await page.waitForSelector('#loadBooks');
+
+      await page.click('#loadBooks');
+
+      await page.waitForTimeout(interval);
+
+      expect(await page.isVisible('text="Delete"')).to.be.true;
+      expect(await page.isVisible('text="Edit"')).to.be.true;
     });
   });
 });
 
 async function setupContext(context) {
   // Catalog and Details
-  await handleContext(context, endpoints.list, { get: mockData.profile });
-  await handleContext(context, endpoints.info('1001'), {
-    get: mockData.details[0],
-  });
-  await handleContext(context, endpoints.info('1002'), {
-    get: mockData.details[1],
-  });
-
+  await handleContext(context, endpoints.catalog, { get: mockData.catalog });
   await handleContext(context, endpoints.details('1001'), {
     get: mockData.catalog[0],
   });
@@ -137,19 +150,15 @@ async function setupContext(context) {
     get: mockData.catalog[2],
   });
 
-  await handleContext(
-    endpoints.profile('0001'),
-    { get: mockData.catalog.slice(0, 2) },
-    context
-  );
-
-  await handleContext(endpoints.total('1001'), { get: 6 }, context);
-  await handleContext(endpoints.total('1002'), { get: 4 }, context);
-  await handleContext(endpoints.total('1003'), { get: 7 }, context);
-
-  await handleContext(endpoints.own('1001', '0001'), { get: 1 }, context);
-  await handleContext(endpoints.own('1002', '0001'), { get: 0 }, context);
-  await handleContext(endpoints.own('1003', '0001'), { get: 0 }, context);
+  await handleContext(context, endpoints.details('1001'), {
+    get2: mockData.catalog[0],
+  });
+  await handleContext(context, endpoints.details('1002'), {
+    get2: mockData.catalog[1],
+  });
+  await handleContext(context, endpoints.details('1003'), {
+    get2: mockData.catalog[2],
+  });
 
   // Block external calls
   await context.route(

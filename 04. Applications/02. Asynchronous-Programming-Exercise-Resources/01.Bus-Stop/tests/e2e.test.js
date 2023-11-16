@@ -1,10 +1,10 @@
 const { chromium } = require('playwright-chromium');
 const { expect } = require('chai');
 
-const host = 'http://localhost:' + 5050; // Application host (NOT service host - that can be anything)
+const host = 'http://localhost:' + 3001; // Application host (NOT service host - that can be anything)
 
 const DEBUG = false;
-const slowMo = 500;
+const slowMo = 400;
 
 const mockData = {
   list: [
