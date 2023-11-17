@@ -83,6 +83,8 @@ describe('E2E tests', function () {
         '.topic-container .topic-name-wrapper',
         (t) => t.map((i) => i.textContent)
       );
+      console.log(form);
+      console.log(form.length);
 
       expect(form.length).to.be.equal(data.length);
     });
