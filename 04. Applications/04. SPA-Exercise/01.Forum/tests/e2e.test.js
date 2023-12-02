@@ -83,8 +83,6 @@ describe('E2E tests', function () {
         '.topic-container .topic-name-wrapper',
         (t) => t.map((i) => i.textContent)
       );
-      console.log(form);
-      console.log(form.length);
 
       expect(form.length).to.be.equal(data.length);
     });
@@ -124,7 +122,8 @@ describe('E2E tests', function () {
         '.container .theme-title >> .theme-name h2',
         (t) => t.map((i) => i.textContent)
       );
-
+        console.log(form);
+        console.log(data);
       expect(form[0]).to.be.equal(data.title);
     });
 

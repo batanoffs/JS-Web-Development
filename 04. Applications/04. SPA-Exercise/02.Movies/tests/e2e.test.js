@@ -4,8 +4,8 @@ const { expect } = require('chai');
 const host = 'http://localhost:3000'; // Application host (NOT service host - that can be anything)
 
 const interval = 300;
-const DEBUG = false;
-const slowMo = 500;
+const DEBUG = true;
+const slowMo = 300;
 
 const mockData = {
   users: [
@@ -265,7 +265,6 @@ describe('E2E tests', function () {
       await page.click(
         `#movie > div div ul li:has-text("${data.title}") >> text=Details`
       );
-
       expect(await page.isVisible('text="Delete"')).to.be.false;
       expect(await page.isVisible('text="Edit"')).to.be.false;
     });
