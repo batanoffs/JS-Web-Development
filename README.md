@@ -1,2 +1,2 @@
 # JS-Web-Development
-My workout - excercises regarding JS
+My workout regarding JS and web development
