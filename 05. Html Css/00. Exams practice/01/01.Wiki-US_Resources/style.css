@@ -1,0 +1,88 @@
+/* ROOT  */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* TOPOGRAPHY  */
+
+h1 {
+    font-family: "Agbalumo", serif;
+    font-size: 3rem;
+}
+
+h5 {
+    font-size: 1.5rem;
+}
+
+p {
+    font-size: 1rem;
+    text-indent: 2rem;
+    padding-bottom: 1rem;
+}
+
+ul {
+    font-size: 1.2rem;
+}
+
+footer {
+    font-size: 1.2rem;
+}
+
+body {
+    font-family: "Agbalumo", sans-serif;
+    border: 2px solid black;
+}
+
+body > header,
+footer > div:last-child {
+    background-color: rgb(195, 223, 224);
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header > h1,h5 {
+    border-bottom: 2px solid black;
+}
+
+main {
+    margin: 2rem;
+    display: flex;
+    align-items: start;
+    gap: 1em;    
+}
+
+main > aside {
+    border: 2px solid black;
+    padding: 1em;
+    flex: 1 0;
+}
+main > section {
+    flex: 2 0;
+}
+img {
+    margin-bottom: 2em;
+    height: 400px;
+}
+
+
+
+footer > div:first-child {
+    background-color: black;
+    color: white;
+    width: fit-content;
+    padding: 0em 3em;
+}
+footer > div:last-child {
+    padding: 0.5em 0em 0.5em 1.5em;
+}
+
+li {
+    list-style: none;
+    margin-bottom: 0.5rem;
+}

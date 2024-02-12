@@ -1,0 +1,29 @@
+@media (max-width: 600px) {
+    main, header, footer, main > section:last-child {
+        max-width: 600px;
+    }
+    main > section:last-child > .row {
+        display: flex;
+        flex-direction: column;
+    }
+    .row , .tm-galley {
+        margin: 0;
+        padding: 0;
+        flex-wrap: none;
+        flex-direction: row;
+    }
+
+    .tm-gallery-page {
+        margin: 0 auto;
+    }
+    .tm-gallery-item{
+        max-width: 600px;
+    }
+    .tm-description-figure {
+        max-width: 500px;
+    }
+    .tm-cta-section {
+        width: auto;
+        display:block;
+    }
+}
